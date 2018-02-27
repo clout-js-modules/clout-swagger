@@ -1,0 +1,30 @@
+{
+  "name": "clout-swagger",
+  "version": "0.0.1",
+  "description": "Clout module to leverage swagger for apis",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clout-js-modules/clout-swagger.git"
+  },
+  "keywords": [
+    "clout",
+    "clout-js",
+    "module",
+    "swagger",
+    "express"
+  ],
+  "author": "Muhammad Dadu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clout-js-modules/clout-swagger/issues"
+  },
+  "homepage": "https://github.com/clout-js-modules/clout-swagger#readme",
+  "dependencies": {
+    "lodash": "^4.17.5",
+    "swagger-ui-dist": "^3.11.0"
+  }
+}
