@@ -29,9 +29,9 @@ module.exports = {
 			conf = _.merge({
 				swagger: '2.0',
 				info: {
-					description: this.package.description,
-					version: this.package.version,
-					title: this.package.name,
+					description: this.applicationPackage.description,
+					version: this.applicationPackage.version,
+					title: this.applicationPackage.name,
 				},
 				host: os.host,
 				schemes: Object.keys(this.server)
