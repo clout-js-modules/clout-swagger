@@ -14,17 +14,18 @@ module.exports = {
 		priority: 'CONTROLLER',
 		fn: function (next) {
 			let conf = this.config.swagger;
-			let apiLayers = this.app._router.stack;
 
 			if (!conf || conf.enabled !== true) {
 				this.logger.info('clout-swagger is disabled');
 				return next();
 			}
 
-			if (!this.apiRoutes) {
+			if (!this.core.api) {
 				this.logger.error('clout-swagger is not supported by this version of clout-js');
 				return next();
 			}
+
+			let routes = this.core.api.routes;
 
 			conf = _.merge({
 				swagger: '2.0',
@@ -37,18 +38,19 @@ module.exports = {
 				schemes: Object.keys(this.server)
 			}, conf);
 
-			let openapi = _.omit(conf, ['enabled']);
+			let openapi = _.omit(conf, ['enabled', 'basePath']);
 			openapi.paths = {};
 
-			Object.keys(this.apiRoutes).forEach((group) => {
-				this.apiRoutes[group].forEach((endpointMeta) => {
+			Object.keys(routes).forEach((group) => {
+				routes[group].forEach((endpointMeta) => {
 					if (!openapi.paths[endpointMeta.path]) {
 						openapi.paths[endpointMeta.path] = {};
 					}
 
 					endpointMeta.methods.forEach((method) => {
 						openapi.paths[endpointMeta.path][method] = {
-							description: endpointMeta.description
+							description: endpointMeta.description,
+							tags: [endpointMeta.group]
 						};
 					});
 				});
