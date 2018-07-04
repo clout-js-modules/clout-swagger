@@ -48,7 +48,7 @@ module.exports = {
 					}
 
 					endpointMeta.methods.forEach((method) => {
-						openapi.paths[endpointMeta.path][method] = {
+						openapi.paths[`/api${endpointMeta.path}`][method] = {
 							description: endpointMeta.description,
 							tags: [endpointMeta.group]
 						};
@@ -61,7 +61,9 @@ module.exports = {
 			});
 
 			this.app.get(conf.basePath, (req, resp) => {
-				resp.render('apidocs.ejs');
+				resp.render('apidocs.ejs', {
+					config: conf
+				});
 			});
 			this.app.use(conf.basePath, express.static(swaggerUiAssetPath));
 

@@ -1,6 +1,6 @@
 {
   "name": "clout-swagger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Clout module to leverage swagger for apis",
   "main": "index.js",
   "scripts": {
