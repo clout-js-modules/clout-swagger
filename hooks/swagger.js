@@ -43,12 +43,14 @@ module.exports = {
 
 			Object.keys(routes).forEach((group) => {
 				routes[group].forEach((endpointMeta) => {
-					if (!openapi.paths[endpointMeta.path]) {
-						openapi.paths[endpointMeta.path] = {};
+					const actualPath = `/api${endpointMeta.path}`;
+
+					if (!openapi.paths[actualPath]) {
+						openapi.paths[actualPath] = {};
 					}
 
 					endpointMeta.methods.forEach((method) => {
-						openapi.paths[`/api${endpointMeta.path}`][method] = {
+						openapi.paths[actualPath][method] = {
 							description: endpointMeta.description,
 							tags: [endpointMeta.group]
 						};
