@@ -8,6 +8,30 @@ const swaggerUiAssetPath = require("swagger-ui-dist").getAbsoluteFSPath()
 const _ = require('lodash');
 const express = require('express');
 
+const EXPRESS_PATH_PARAM_REGEX = /:([a-zA-Z_0-9]+)\/?/gi;
+
+function getParamsInPath(path) {
+	let match;
+	let params = [];
+
+	while (match = EXPRESS_PATH_PARAM_REGEX.exec(path)) {
+		if (match) {
+			params.push(match[1]);
+		}
+	}
+
+	return params
+}
+
+function generateOpenApiPath(_path) {
+	let path = _path;
+	let params = getParamsInPath(path);
+
+	params.forEach((key) => path = path.replace(`:${key}`, `{${key}}`));
+
+	return path;
+}
+
 module.exports = {
 	docgen: {
 		event: 'start',
@@ -43,16 +67,42 @@ module.exports = {
 
 			Object.keys(routes).forEach((group) => {
 				routes[group].forEach((endpointMeta) => {
-					const actualPath = `/api${endpointMeta.path}`;
+					const metaParams = endpointMeta.params || {};
+					const openApiPath = generateOpenApiPath(`/api${endpointMeta.path}`);
+					const pathParams = getParamsInPath(endpointMeta.path);
+					let parameters = [];
 
-					if (!openapi.paths[actualPath]) {
-						openapi.paths[actualPath] = {};
+					if (!openapi.paths[openApiPath]) {
+						openapi.paths[openApiPath] = {};
 					}
 
+					// add path params to openApi
+					parameters = parameters.concat(pathParams.map((name) => {
+						let openApiParam = {
+							name: name,
+							in: 'path',
+							required: endpointMeta.path.indexOf(`:${name}?`) !== -1
+						};
+						let meta = metaParams[name] || {};
+
+						return openApiParam;
+					}));
+
+					// add api defined params to openApi
+					parameters = parameters.concat(Object.keys(metaParams).filter((name) => pathParams.indexOf(name) === -1).map((name) => {
+						let openApiParam = {
+							name: name
+						};
+
+						return openApiParam;
+					}));
+
+
 					endpointMeta.methods.forEach((method) => {
-						openapi.paths[actualPath][method] = {
+						openapi.paths[openApiPath][method] = {
 							description: endpointMeta.description,
-							tags: [endpointMeta.group]
+							tags: [endpointMeta.group],
+							parameters
 						};
 					});
 				});
