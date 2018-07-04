@@ -59,3 +59,34 @@ module.exports = {
 ## Usage
 
 The documentation will be derived by your clout-api's
+
+### Defining API parameters
+
+You can now define information regarding your API params using the (OpenAPI standard)[https://swagger.io/docs/specification/describing-parameters/].
+
+Using the definitions in the above link, an example api would look like the following.
+
+```javascript
+module.exports = {
+    login: {
+        path: '/auth/login',
+        methods: ['post'],
+        params: {
+            read: {
+                in: 'body',
+                required: true,
+                schema: {
+                    type: 'string'
+                }
+            },
+            write: {
+                in: 'body',
+                required: true,
+                schema: {
+                    type: 'string'
+                }
+            }
+        }
+    }
+};
+```

@@ -85,6 +85,10 @@ module.exports = {
 						};
 						let meta = metaParams[name] || {};
 
+						if (typeof meta === 'object' && ['body', 'query', 'path'].indexOf(meta.in) !== -1) {
+							Object.assign(openApiParam, meta);
+						}
+
 						return openApiParam;
 					}));
 
@@ -93,10 +97,14 @@ module.exports = {
 						let openApiParam = {
 							name: name
 						};
+						let meta = metaParams[name] || {};
+
+						if (typeof meta === 'object' && ['body', 'query', 'path'].indexOf(meta.in) !== -1) {
+							Object.assign(openApiParam, meta);
+						}
 
 						return openApiParam;
 					}));
-
 
 					endpointMeta.methods.forEach((method) => {
 						openapi.paths[openApiPath][method] = {
